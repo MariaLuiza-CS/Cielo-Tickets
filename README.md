@@ -219,7 +219,7 @@ Cobertura concentrada nos cenários **críticos**, não amplitude total (decisã
 - `FormattersTest`, `EventMapperTest`, `PaymentCallbackBusTest`
 - `EventDetailViewModelTest`, `EventListViewModelTest` — regras de negócio de UI
 
-Relatório de cobertura gerado via JaCoCo, com verificação mínima de **70%** aplicada apenas ao código unitariamente testável (exclui Composables, navegação, DI e classes geradas — ver trade-offs).
+Relatório de cobertura gerado via JaCoCo, aplicada apenas ao código unitariamente testável (exclui Composables, navegação, DI e classes geradas — ver trade-offs).
 
 ---
 
