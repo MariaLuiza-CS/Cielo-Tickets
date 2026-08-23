@@ -13,10 +13,10 @@ import com.cielotickets.app.data.local.entity.TicketEntity
     entities = [
         EventEntity::class,
         PendingPurchaseEntity::class,
-        TicketEntity::class
+        TicketEntity::class,
     ],
     version = 4,
-    exportSchema = false
+    exportSchema = false,
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun eventDao(): EventDao

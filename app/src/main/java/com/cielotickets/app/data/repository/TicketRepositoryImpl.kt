@@ -10,22 +10,14 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class TicketRepositoryImpl @Inject constructor(
-    private val ticketDao: TicketDao
-) : TicketRepository {
+class TicketRepositoryImpl @Inject constructor(private val ticketDao: TicketDao) : TicketRepository {
     override suspend fun saveTicket(ticket: Ticket) {
         ticketDao.insert(ticket.toEntity())
     }
 
-    override fun getTicketById(id: String): Flow<Ticket?> {
-        return ticketDao.getById(id).map { it?.toDomain() }
-    }
+    override fun getTicketById(id: String): Flow<Ticket?> = ticketDao.getById(id).map { it?.toDomain() }
 
-    override fun getAllTickets(): Flow<List<Ticket>> {
-        return ticketDao.getAll().map { it.toTicketDomainList() }
-    }
+    override fun getAllTickets(): Flow<List<Ticket>> = ticketDao.getAll().map { it.toTicketDomainList() }
 
-    override suspend fun getTicketByReference(reference: String): Ticket? {
-        return ticketDao.getByPurchaseReference(reference)?.toDomain()
-    }
+    override suspend fun getTicketByReference(reference: String): Ticket? = ticketDao.getByPurchaseReference(reference)?.toDomain()
 }

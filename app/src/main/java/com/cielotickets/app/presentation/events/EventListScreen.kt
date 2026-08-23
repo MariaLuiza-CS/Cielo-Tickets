@@ -46,11 +46,7 @@ import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EventListScreen(
-    viewModel: EventListViewModel,
-    onMenuClick: () -> Unit,
-    onNavigateToDetail: (String) -> Unit
-) {
+fun EventListScreen(viewModel: EventListViewModel, onMenuClick: () -> Unit, onNavigateToDetail: (String) -> Unit) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -75,15 +71,15 @@ fun EventListScreen(
                     IconButton(onClick = onMenuClick) {
                         Icon(imageVector = Icons.Default.Menu, contentDescription = "Menu")
                     }
-                }
+                },
             )
         },
-        snackbarHost = { SnackbarHost(snackbarHostState) }
+        snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { padding ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding)
+                .padding(padding),
         ) {
             if (state.isLoading) {
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
@@ -93,19 +89,19 @@ fun EventListScreen(
                 ErrorView(
                     message = state.errorMessage!!,
                     onRetry = { viewModel.sendIntent(EventListContract.Intent.RefreshEvents) },
-                    modifier = Modifier.align(Alignment.Center)
+                    modifier = Modifier.align(Alignment.Center),
                 )
             }
 
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(16.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 items(state.events) { event ->
                     EventItem(
                         event = event,
-                        onClick = { viewModel.sendIntent(EventListContract.Intent.EventClicked(event.id)) }
+                        onClick = { viewModel.sendIntent(EventListContract.Intent.EventClicked(event.id)) },
                     )
                 }
             }
@@ -120,7 +116,7 @@ fun EventItem(event: Event, onClick: () -> Unit) {
             .fillMaxWidth()
             .clickable(onClick = onClick),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
     ) {
         Column {
             AsyncImage(
@@ -129,18 +125,18 @@ fun EventItem(event: Event, onClick: () -> Unit) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .aspectRatio(16f / 9f),
-                contentScale = ContentScale.Crop
+                contentScale = ContentScale.Crop,
             )
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(
                     text = event.name,
                     style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = "📅 ${event.date.toFormattedEventDate()}",
-                    style = MaterialTheme.typography.bodyMedium
+                    style = MaterialTheme.typography.bodyMedium,
                 )
                 Text(text = "📍 ${event.location}", style = MaterialTheme.typography.bodyMedium)
                 Spacer(modifier = Modifier.height(8.dp))
@@ -149,7 +145,7 @@ fun EventItem(event: Event, onClick: () -> Unit) {
                     text = priceFormatted,
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.primary,
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.SemiBold,
                 )
             }
         }
@@ -160,7 +156,7 @@ fun EventItem(event: Event, onClick: () -> Unit) {
 fun ErrorView(message: String, onRetry: () -> Unit, modifier: Modifier = Modifier) {
     Column(
         modifier = modifier.padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(text = message, color = MaterialTheme.colorScheme.error)
         Spacer(modifier = Modifier.height(8.dp))

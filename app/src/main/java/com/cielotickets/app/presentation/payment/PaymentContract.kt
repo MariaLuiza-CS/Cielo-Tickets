@@ -15,15 +15,11 @@ class PaymentContract {
         val totalPriceCents: Int = 0,
         val paymentState: PaymentState = PaymentState.Idle,
         val generatedTicket: Ticket? = null,
-        val isLoading: Boolean = false
+        val isLoading: Boolean = false,
     ) : UiState
 
     sealed interface Intent : UiIntent {
-        data class LoadPaymentInfo(
-            val eventId: String,
-            val quantity: Int,
-            val totalPriceCents: Int
-        ) : Intent
+        data class LoadPaymentInfo(val eventId: String, val quantity: Int, val totalPriceCents: Int) : Intent
         data object StartPayment : Intent
         data class PaymentCallbackReceived(val rawUri: String) : Intent
     }

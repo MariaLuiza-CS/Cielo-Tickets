@@ -17,21 +17,14 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
 import javax.inject.Inject
 
-class PaymentRepositoryImpl @Inject constructor(
-    private val pendingPurchaseDao: PendingPurchaseDao
-) : PaymentRepository {
+class PaymentRepositoryImpl @Inject constructor(private val pendingPurchaseDao: PendingPurchaseDao) : PaymentRepository {
 
     private val json = Json {
         ignoreUnknownKeys = true
         encodeDefaults = true
     }
 
-    override fun buildPaymentUri(
-        eventId: String,
-        quantity: Int,
-        unitPriceCents: Int,
-        idempotencyKey: String
-    ): String {
+    override fun buildPaymentUri(eventId: String, quantity: Int, unitPriceCents: Int, idempotencyKey: String): String {
         val requestDto = PaymentRequestDto(
             accessToken = BuildConfig.CIELO_ACCESS_TOKEN,
             clientID = BuildConfig.CIELO_CLIENT_ID,
@@ -41,18 +34,18 @@ class PaymentRepositoryImpl @Inject constructor(
                     name = "Ingresso CieloTickets",
                     quantity = quantity,
                     sku = eventId,
-                    unitPrice = unitPriceCents
-                )
+                    unitPrice = unitPriceCents,
+                ),
             ),
-            value = unitPriceCents * quantity
+            value = unitPriceCents * quantity,
         )
 
         val jsonString = json.encodeToString(requestDto)
         val base64Request = Base64Utils.encode(jsonString)
 
         return "${CieloDeepLinkConstants.PAYMENT_URI_SCHEME}" +
-                "://${CieloDeepLinkConstants.PAYMENT_URI_HOST}" +
-                "?request=$base64Request&urlCallback=${CieloDeepLinkConstants.CALLBACK_URI}"
+            "://${CieloDeepLinkConstants.PAYMENT_URI_HOST}" +
+            "?request=$base64Request&urlCallback=${CieloDeepLinkConstants.CALLBACK_URI}"
     }
 
     override fun parsePaymentCallback(callbackData: String): PaymentState {
@@ -87,30 +80,22 @@ class PaymentRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun savePendingPurchase(
-        idempotencyKey: String,
-        eventId: String,
-        quantity: Int,
-        totalPriceCents: Int
-    ) {
+    override suspend fun savePendingPurchase(idempotencyKey: String, eventId: String, quantity: Int, totalPriceCents: Int) {
         pendingPurchaseDao.insert(
             PendingPurchaseEntity(
                 idempotencyKey = idempotencyKey,
                 eventId = eventId,
                 quantity = quantity,
                 totalPriceCents = totalPriceCents,
-                status = "PENDING"
-            )
+                status = "PENDING",
+            ),
         )
     }
 
-    override suspend fun getPendingPurchase(idempotencyKey: String): String? {
-        return pendingPurchaseDao.getByKey(idempotencyKey)?.idempotencyKey
-    }
+    override suspend fun getPendingPurchase(idempotencyKey: String): String? = pendingPurchaseDao.getByKey(idempotencyKey)?.idempotencyKey
 
-    override suspend fun getExistingPendingKey(eventId: String, quantity: Int): String? {
-        return pendingPurchaseDao.findPendingByEventAndQuantity(eventId, quantity)?.idempotencyKey
-    }
+    override suspend fun getExistingPendingKey(eventId: String, quantity: Int): String? =
+        pendingPurchaseDao.findPendingByEventAndQuantity(eventId, quantity)?.idempotencyKey
 
     override suspend fun updatePurchaseStatus(idempotencyKey: String, status: String) {
         pendingPurchaseDao.updateStatus(idempotencyKey, status)

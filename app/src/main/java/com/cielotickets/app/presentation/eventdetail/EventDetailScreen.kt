@@ -47,11 +47,7 @@ import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EventDetailScreen(
-    viewModel: EventDetailViewModel,
-    onNavigateBack: () -> Unit,
-    onNavigateToPayment: (String, Int, Double) -> Unit
-) {
+fun EventDetailScreen(viewModel: EventDetailViewModel, onNavigateBack: () -> Unit, onNavigateToPayment: (String, Int, Double) -> Unit) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -77,18 +73,18 @@ fun EventDetailScreen(
                     IconButton(onClick = onNavigateBack) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Voltar"
+                            contentDescription = "Voltar",
                         )
                     }
-                }
+                },
             )
         },
-        snackbarHost = { SnackbarHost(snackbarHostState) }
+        snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { padding ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding)
+                .padding(padding),
         ) {
             if (state.isLoading) {
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
@@ -96,14 +92,14 @@ fun EventDetailScreen(
                 Text(
                     text = state.errorMessage!!,
                     color = MaterialTheme.colorScheme.error,
-                    modifier = Modifier.align(Alignment.Center)
+                    modifier = Modifier.align(Alignment.Center),
                 )
             } else {
                 state.event?.let { event ->
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
-                            .verticalScroll(rememberScrollState())
+                            .verticalScroll(rememberScrollState()),
                     ) {
                         AsyncImage(
                             model = event.imageUrl,
@@ -111,23 +107,23 @@ fun EventDetailScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(250.dp),
-                            contentScale = ContentScale.Crop
+                            contentScale = ContentScale.Crop,
                         )
 
                         Column(modifier = Modifier.padding(16.dp)) {
                             Text(
                                 text = event.name,
                                 style = MaterialTheme.typography.headlineMedium,
-                                fontWeight = FontWeight.Bold
+                                fontWeight = FontWeight.Bold,
                             )
                             Spacer(modifier = Modifier.height(8.dp))
                             Text(
                                 text = "📅 ${event.date.toFormattedEventDate()}",
-                                style = MaterialTheme.typography.bodyLarge
+                                style = MaterialTheme.typography.bodyLarge,
                             )
                             Text(
                                 text = "📍 ${event.location}",
-                                style = MaterialTheme.typography.bodyLarge
+                                style = MaterialTheme.typography.bodyLarge,
                             )
                             Spacer(modifier = Modifier.height(16.dp))
 
@@ -138,34 +134,34 @@ fun EventDetailScreen(
                             Text(
                                 text = "Quantidade",
                                 style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.Bold
+                                fontWeight = FontWeight.Bold,
                             )
 
                             Row(
                                 modifier = Modifier.padding(vertical = 8.dp),
-                                verticalAlignment = Alignment.CenterVertically
+                                verticalAlignment = Alignment.CenterVertically,
                             ) {
                                 IconButton(
                                     onClick = { viewModel.sendIntent(EventDetailContract.Intent.DecreaseQuantity) },
                                     modifier = Modifier.semantics {
                                         contentDescription = "Diminuir quantidade de ingressos"
-                                    }
+                                    },
                                 ) {
                                     Icon(
                                         imageVector = Icons.Default.Remove,
-                                        contentDescription = null
+                                        contentDescription = null,
                                     )
                                 }
                                 Text(
                                     text = state.quantity.toString(),
                                     style = MaterialTheme.typography.headlineSmall,
-                                    modifier = Modifier.padding(horizontal = 16.dp)
+                                    modifier = Modifier.padding(horizontal = 16.dp),
                                 )
                                 IconButton(
                                     onClick = { viewModel.sendIntent(EventDetailContract.Intent.IncreaseQuantity) },
                                     modifier = Modifier.semantics {
                                         contentDescription = "Aumentar quantidade de ingressos"
-                                    }
+                                    },
                                 ) {
                                     Icon(imageVector = Icons.Default.Add, contentDescription = null)
                                 }
@@ -173,7 +169,7 @@ fun EventDetailScreen(
                                 Text(
                                     text = "Disponíveis: ${event.availableTickets}",
                                     style = MaterialTheme.typography.bodySmall,
-                                    color = MaterialTheme.colorScheme.secondary
+                                    color = MaterialTheme.colorScheme.secondary,
                                 )
                             }
 
@@ -182,19 +178,19 @@ fun EventDetailScreen(
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
                                 verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.SpaceBetween
+                                horizontalArrangement = Arrangement.SpaceBetween,
                             ) {
                                 Text(
                                     text = "Total:",
                                     style = MaterialTheme.typography.titleLarge,
-                                    fontWeight = FontWeight.Bold
+                                    fontWeight = FontWeight.Bold,
                                 )
                                 val totalPriceFormatted = state.totalPrice.toBrazilianCurrency()
                                 Text(
                                     text = totalPriceFormatted,
                                     style = MaterialTheme.typography.headlineSmall,
                                     color = MaterialTheme.colorScheme.primary,
-                                    fontWeight = FontWeight.ExtraBold
+                                    fontWeight = FontWeight.ExtraBold,
                                 )
                             }
 
@@ -203,7 +199,7 @@ fun EventDetailScreen(
                             Button(
                                 onClick = { viewModel.sendIntent(EventDetailContract.Intent.ProceedToPayment) },
                                 modifier = Modifier.fillMaxWidth(),
-                                enabled = !state.isLoading && state.event != null
+                                enabled = !state.isLoading && state.event != null,
                             ) {
                                 Text("Continuar para pagamento", fontSize = 18.sp)
                             }

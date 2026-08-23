@@ -16,20 +16,12 @@ import com.cielotickets.app.presentation.payment.PaymentScreen
 import com.cielotickets.app.presentation.payment.PaymentViewModel
 import com.cielotickets.app.presentation.receipt.ReceiptScreen
 import com.cielotickets.app.presentation.receipt.ReceiptViewModel
-import androidx.compose.material3.Text
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 
 @Composable
-fun NavGraph(
-    navController: NavHostController,
-    onOpenDrawer: () -> Unit
-) {
+fun NavGraph(navController: NavHostController, onOpenDrawer: () -> Unit) {
     NavHost(
         navController = navController,
-        startDestination = Screen.EventList.route
+        startDestination = Screen.EventList.route,
     ) {
         composable(Screen.EventList.route) {
             val viewModel: EventListViewModel = hiltViewModel()
@@ -38,7 +30,7 @@ fun NavGraph(
                 onMenuClick = onOpenDrawer,
                 onNavigateToDetail = { eventId ->
                     navController.navigate(Screen.EventDetail.createRoute(eventId))
-                }
+                },
             )
         }
 
@@ -49,13 +41,13 @@ fun NavGraph(
                 onMenuClick = onOpenDrawer,
                 onNavigateToReceipt = { ticketId ->
                     navController.navigate(Screen.Receipt.createRoute(ticketId))
-                }
+                },
             )
         }
 
         composable(
             route = Screen.EventDetail.route,
-            arguments = listOf(navArgument("eventId") { type = androidx.navigation.NavType.StringType })
+            arguments = listOf(navArgument("eventId") { type = androidx.navigation.NavType.StringType }),
         ) {
             val viewModel: EventDetailViewModel = hiltViewModel()
             EventDetailScreen(
@@ -63,7 +55,7 @@ fun NavGraph(
                 onNavigateBack = { navController.popBackStack() },
                 onNavigateToPayment = { eventId, quantity, totalPrice ->
                     navController.navigate(Screen.Payment.createRoute(eventId, quantity, totalPrice))
-                }
+                },
             )
         }
 
@@ -72,8 +64,8 @@ fun NavGraph(
             arguments = listOf(
                 navArgument("eventId") { type = androidx.navigation.NavType.StringType },
                 navArgument("quantity") { type = androidx.navigation.NavType.IntType },
-                navArgument("totalPrice") { type = androidx.navigation.NavType.FloatType }
-            )
+                navArgument("totalPrice") { type = androidx.navigation.NavType.FloatType },
+            ),
         ) {
             val viewModel: PaymentViewModel = hiltViewModel()
             PaymentScreen(
@@ -81,13 +73,13 @@ fun NavGraph(
                 onNavigateBack = { navController.popBackStack() },
                 onNavigateToReceipt = { ticketId ->
                     navController.navigate(Screen.Receipt.createRoute(ticketId))
-                }
+                },
             )
         }
 
         composable(
             route = Screen.Receipt.route,
-            arguments = listOf(navArgument("ticketId") { type = androidx.navigation.NavType.StringType })
+            arguments = listOf(navArgument("ticketId") { type = androidx.navigation.NavType.StringType }),
         ) {
             val viewModel: ReceiptViewModel = hiltViewModel()
             ReceiptScreen(
@@ -97,7 +89,7 @@ fun NavGraph(
                         popUpTo(Screen.EventList.route) { inclusive = false }
                         launchSingleTop = true
                     }
-                }
+                },
             )
         }
     }

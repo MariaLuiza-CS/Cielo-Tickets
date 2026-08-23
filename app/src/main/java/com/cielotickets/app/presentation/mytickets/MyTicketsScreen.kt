@@ -43,11 +43,7 @@ import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyTicketsScreen(
-    viewModel: MyTicketsViewModel,
-    onMenuClick: () -> Unit,
-    onNavigateToReceipt: (String) -> Unit
-) {
+fun MyTicketsScreen(viewModel: MyTicketsViewModel, onMenuClick: () -> Unit, onNavigateToReceipt: (String) -> Unit) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
@@ -68,14 +64,14 @@ fun MyTicketsScreen(
                     IconButton(onClick = onMenuClick) {
                         Icon(imageVector = Icons.Default.Menu, contentDescription = "Menu")
                     }
-                }
+                },
             )
-        }
+        },
     ) { padding ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding)
+                .padding(padding),
         ) {
             if (state.isLoading) {
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
@@ -83,13 +79,13 @@ fun MyTicketsScreen(
                 Text(
                     text = "Você ainda não comprou nenhum ingresso",
                     modifier = Modifier.align(Alignment.Center),
-                    style = MaterialTheme.typography.bodyLarge
+                    style = MaterialTheme.typography.bodyLarge,
                 )
             } else {
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
                     contentPadding = PaddingValues(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     items(state.tickets) { ticket ->
                         TicketListItem(
@@ -97,10 +93,10 @@ fun MyTicketsScreen(
                             onClick = {
                                 viewModel.sendIntent(
                                     MyTicketsContract.Intent.TicketClicked(
-                                        ticket.ticketId
-                                    )
+                                        ticket.ticketId,
+                                    ),
                                 )
-                            }
+                            },
                         )
                     }
                 }
@@ -118,29 +114,29 @@ fun TicketListItem(ticket: Ticket, onClick: () -> Unit) {
             .fillMaxWidth()
             .clickable(onClick = onClick),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
     ) {
         Row(
             modifier = Modifier.padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Icon(
                 imageVector = Icons.Default.ConfirmationNumber,
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.size(32.dp)
+                modifier = Modifier.size(32.dp),
             )
             Spacer(modifier = Modifier.width(16.dp))
             Column {
                 Text(
                     text = ticket.eventName,
                     style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
                 )
                 Text(
                     text = "Comprado em: $dateString",
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.secondary
+                    color = MaterialTheme.colorScheme.secondary,
                 )
             }
             Spacer(modifier = Modifier.weight(1f))
@@ -149,14 +145,14 @@ fun TicketListItem(ticket: Ticket, onClick: () -> Unit) {
                     imageVector = Icons.Default.CheckCircle,
                     contentDescription = null,
                     tint = Color(0xFF2E7D32),
-                    modifier = Modifier.size(16.dp)
+                    modifier = Modifier.size(16.dp),
                 )
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(
                     text = "Aprovado",
                     color = Color(0xFF2E7D32),
                     style = MaterialTheme.typography.labelSmall,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
                 )
             }
         }

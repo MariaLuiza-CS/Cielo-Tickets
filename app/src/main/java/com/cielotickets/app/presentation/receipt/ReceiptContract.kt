@@ -8,11 +8,7 @@ import com.cielotickets.app.presentation.base.UiState
 
 class ReceiptContract {
 
-    data class State(
-        val ticket: Ticket? = null,
-        val event: Event? = null,
-        val isLoading: Boolean = false
-    ) : UiState
+    data class State(val ticket: Ticket? = null, val event: Event? = null, val isLoading: Boolean = false) : UiState
 
     sealed interface Intent : UiIntent {
         data class LoadReceipt(val ticketId: String) : Intent

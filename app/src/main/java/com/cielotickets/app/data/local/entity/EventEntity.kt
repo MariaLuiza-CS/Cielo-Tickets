@@ -11,5 +11,5 @@ data class EventEntity(
     val location: String,
     val price: Double,
     val imageUrl: String,
-    val availableTickets: Int
+    val availableTickets: Int,
 )

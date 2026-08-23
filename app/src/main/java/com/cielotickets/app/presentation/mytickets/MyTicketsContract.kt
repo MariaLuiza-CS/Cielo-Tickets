@@ -7,11 +7,7 @@ import com.cielotickets.app.presentation.base.UiState
 
 class MyTicketsContract {
 
-    data class State(
-        val tickets: List<Ticket> = emptyList(),
-        val isLoading: Boolean = false,
-        val isEmpty: Boolean = false
-    ) : UiState
+    data class State(val tickets: List<Ticket> = emptyList(), val isLoading: Boolean = false, val isEmpty: Boolean = false) : UiState
 
     sealed interface Intent : UiIntent {
         data object LoadTickets : Intent

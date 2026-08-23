@@ -3,15 +3,7 @@ package com.cielotickets.app.domain.model
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Event(
-    val id: String,
-    val name: String,
-    val date: String,
-    val location: String,
-    val price: Double,
-    val imageUrl: String,
-    val availableTickets: Int
-)
+data class Event(val id: String, val name: String, val date: String, val location: String, val price: Double, val imageUrl: String, val availableTickets: Int)
 
 @Serializable
 data class Ticket(
@@ -21,7 +13,7 @@ data class Ticket(
     val purchaseReference: String,
     val cieloOrderId: String?,
     val qrPayload: String,
-    val createdAt: Long
+    val createdAt: Long,
 )
 
 sealed interface PaymentState {

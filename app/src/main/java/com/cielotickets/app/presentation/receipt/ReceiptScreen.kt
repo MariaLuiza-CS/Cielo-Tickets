@@ -51,10 +51,7 @@ import kotlinx.coroutines.withContext
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ReceiptScreen(
-    viewModel: ReceiptViewModel,
-    onNavigateToHome: () -> Unit
-) {
+fun ReceiptScreen(viewModel: ReceiptViewModel, onNavigateToHome: () -> Unit) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -72,7 +69,7 @@ fun ReceiptScreen(
         topBar = {
             TopAppBar(title = { Text("Comprovante") })
         },
-        snackbarHost = { SnackbarHost(snackbarHostState) }
+        snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { padding ->
         Column(
             modifier = Modifier
@@ -80,7 +77,7 @@ fun ReceiptScreen(
                 .padding(padding)
                 .verticalScroll(rememberScrollState())
                 .padding(24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             if (state.isLoading) {
                 CircularProgressIndicator()
@@ -90,7 +87,7 @@ fun ReceiptScreen(
                         imageVector = Icons.Default.CheckCircle,
                         contentDescription = null,
                         modifier = Modifier.size(64.dp),
-                        tint = MaterialTheme.colorScheme.primary
+                        tint = MaterialTheme.colorScheme.primary,
                     )
 
                     Spacer(modifier = Modifier.height(8.dp))
@@ -99,21 +96,21 @@ fun ReceiptScreen(
                         text = "Compra Aprovada!",
                         style = MaterialTheme.typography.headlineSmall,
                         fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.primary
+                        color = MaterialTheme.colorScheme.primary,
                     )
 
                     Spacer(modifier = Modifier.height(24.dp))
 
                     Card(
                         modifier = Modifier.fillMaxWidth(),
-                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
                     ) {
                         Column(modifier = Modifier.padding(16.dp)) {
                             state.event?.let { event ->
                                 Text(
                                     text = event.name,
                                     style = MaterialTheme.typography.titleLarge,
-                                    fontWeight = FontWeight.Bold
+                                    fontWeight = FontWeight.Bold,
                                 )
                                 Text(text = "📅 ${event.date.toFormattedEventDate()}")
                                 Text(text = "📍 ${event.location}")
@@ -132,7 +129,7 @@ fun ReceiptScreen(
                     Text(
                         text = "Apresente este QR Code na entrada do evento",
                         style = MaterialTheme.typography.bodySmall,
-                        textAlign = TextAlign.Center
+                        textAlign = TextAlign.Center,
                     )
 
                     Spacer(modifier = Modifier.height(24.dp))
@@ -144,19 +141,19 @@ fun ReceiptScreen(
                     Text(
                         text = "ID do Ticket: ${ticket.ticketId}",
                         style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                     Text(
                         text = "Transação Cielo: ${ticket.cieloOrderId ?: "N/A"}",
                         style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
 
                     Spacer(modifier = Modifier.height(48.dp))
 
                     Button(
                         onClick = onNavigateToHome,
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
                     ) {
                         Text("Voltar para Lista de Eventos")
                     }
@@ -180,7 +177,7 @@ fun QrCodeImage(payload: String) {
         Image(
             bitmap = it.asImageBitmap(),
             contentDescription = "QR Code para acesso ao evento",
-            modifier = Modifier.size(200.dp)
+            modifier = Modifier.size(200.dp),
         )
     } ?: run {
         Box(modifier = Modifier.size(200.dp), contentAlignment = Alignment.Center) {
@@ -194,7 +191,7 @@ private fun generateQrCode(text: String, size: Int): Bitmap {
         text,
         BarcodeFormat.QR_CODE,
         size,
-        size
+        size,
     )
     val width = bitMatrix.width
     val height = bitMatrix.height

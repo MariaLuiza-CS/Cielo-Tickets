@@ -45,7 +45,7 @@ fun AppScaffold() {
                         }
                     },
                     icon = { Icon(Icons.Default.Event, contentDescription = null) },
-                    modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+                    modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding),
                 )
                 NavigationDrawerItem(
                     label = { Text("Meus Ingressos") },
@@ -57,16 +57,16 @@ fun AppScaffold() {
                         }
                     },
                     icon = { Icon(Icons.Default.ConfirmationNumber, contentDescription = null) },
-                    modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+                    modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding),
                 )
             }
-        }
+        },
     ) {
         NavGraph(
             navController = navController,
             onOpenDrawer = {
                 scope.launch { drawerState.open() }
-            }
+            },
         )
     }
 }

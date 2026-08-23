@@ -2,13 +2,39 @@ package com.cielotickets.app.presentation.payment
 
 import android.content.Intent
 import android.net.Uri
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -26,11 +52,7 @@ import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PaymentScreen(
-    viewModel: PaymentViewModel,
-    onNavigateBack: () -> Unit,
-    onNavigateToReceipt: (String) -> Unit
-) {
+fun PaymentScreen(viewModel: PaymentViewModel, onNavigateBack: () -> Unit, onNavigateToReceipt: (String) -> Unit) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val snackbarHostState = remember { SnackbarHostState() }
@@ -47,8 +69,8 @@ fun PaymentScreen(
                     } catch (e: Exception) {
                         viewModel.sendIntent(
                             PaymentContract.Intent.PaymentCallbackReceived(
-                                "error://response?response=eyJjb2RlIjo0LCJyZWFzb24iOiJBcHAgQ2llbG8gU21hcnQgbsOjbyBlbmNvbnRyYWRvIn0="
-                            )
+                                "error://response?response=eyJjb2RlIjo0LCJyZWFzb24iOiJBcHAgQ2llbG8gU21hcnQgbsOjbyBlbmNvbnRyYWRvIn0=",
+                            ),
                         )
                     }
                 }
@@ -72,13 +94,13 @@ fun PaymentScreen(
                     IconButton(onClick = onNavigateBack) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Voltar"
+                            contentDescription = "Voltar",
                         )
                     }
-                }
+                },
             )
         },
-        snackbarHost = { SnackbarHost(snackbarHostState) }
+        snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { padding ->
         Column(
             modifier = Modifier
@@ -86,19 +108,19 @@ fun PaymentScreen(
                 .padding(padding)
                 .padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(24.dp)
+            verticalArrangement = Arrangement.spacedBy(24.dp),
         ) {
             state.event?.let { event ->
                 Text(
                     text = "Resumo da Compra",
                     style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
                 )
 
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                 ) {
                     Column {
                         AsyncImage(
@@ -108,12 +130,12 @@ fun PaymentScreen(
                                 .fillMaxWidth()
                                 .aspectRatio(16f / 9f)
                                 .clip(RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp)),
-                            contentScale = ContentScale.Crop
+                            contentScale = ContentScale.Crop,
                         )
                         Column(modifier = Modifier.padding(16.dp)) {
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween
+                                horizontalArrangement = Arrangement.SpaceBetween,
                             ) {
                                 Text(text = "Evento:", fontWeight = FontWeight.Bold)
                                 Text(text = event.name)
@@ -121,7 +143,7 @@ fun PaymentScreen(
                             Spacer(modifier = Modifier.height(8.dp))
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween
+                                horizontalArrangement = Arrangement.SpaceBetween,
                             ) {
                                 Text(text = "Quantidade:", fontWeight = FontWeight.Bold)
                                 Text(text = "${state.quantity}x")
@@ -131,25 +153,25 @@ fun PaymentScreen(
                             Spacer(modifier = Modifier.height(16.dp))
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween
+                                horizontalArrangement = Arrangement.SpaceBetween,
                             ) {
                                 Text(
                                     text = "Total:",
                                     style = MaterialTheme.typography.titleMedium,
-                                    fontWeight = FontWeight.ExtraBold
+                                    fontWeight = FontWeight.ExtraBold,
                                 )
                                 val totalFormatted = state.totalPriceCents.toBrazilianCurrency()
                                 Text(
                                     text = totalFormatted,
                                     style = MaterialTheme.typography.titleMedium,
                                     color = MaterialTheme.colorScheme.primary,
-                                    fontWeight = FontWeight.ExtraBold
+                                    fontWeight = FontWeight.ExtraBold,
                                 )
                             }
                         }
                     }
                 }
-                
+
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -159,12 +181,12 @@ fun PaymentScreen(
                         imageVector = Icons.Default.Lock,
                         contentDescription = null,
                         modifier = Modifier.size(16.dp),
-                        tint = MaterialTheme.colorScheme.secondary
+                        tint = MaterialTheme.colorScheme.secondary,
                     )
                     Text(
                         text = "Pagamento seguro processado pela Cielo Smart",
                         style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.secondary
+                        color = MaterialTheme.colorScheme.secondary,
                     )
                 }
             }
@@ -180,13 +202,13 @@ fun PaymentScreen(
                     .padding(bottom = 24.dp),
                 enabled = state.paymentState !is PaymentState.Processing && !state.isLoading,
                 shape = MaterialTheme.shapes.medium,
-                contentPadding = PaddingValues(16.dp)
+                contentPadding = PaddingValues(16.dp),
             ) {
                 if (state.paymentState is PaymentState.Processing) {
                     CircularProgressIndicator(
                         modifier = Modifier.size(24.dp),
                         color = MaterialTheme.colorScheme.onPrimary,
-                        strokeWidth = 2.dp
+                        strokeWidth = 2.dp,
                     )
                 } else {
                     Text("Pagar com Cielo Smart", fontSize = 18.sp)
@@ -204,7 +226,7 @@ fun PaymentStatusView(paymentState: PaymentState) {
                 text = "Aguardando terminal Cielo...",
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.secondary
+                color = MaterialTheme.colorScheme.secondary,
             )
         }
 
@@ -213,7 +235,7 @@ fun PaymentStatusView(paymentState: PaymentState) {
                 text = "❌ ${paymentState.reason}",
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.error
+                color = MaterialTheme.colorScheme.error,
             )
         }
 
@@ -222,7 +244,7 @@ fun PaymentStatusView(paymentState: PaymentState) {
                 text = "⚠️ Erro: ${paymentState.reason}",
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.error
+                color = MaterialTheme.colorScheme.error,
             )
         }
 
@@ -230,7 +252,7 @@ fun PaymentStatusView(paymentState: PaymentState) {
             Text(
                 text = "Operação cancelada",
                 textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.bodyLarge
+                style = MaterialTheme.typography.bodyLarge,
             )
         }
 

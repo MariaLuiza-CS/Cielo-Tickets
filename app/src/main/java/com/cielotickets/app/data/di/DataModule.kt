@@ -29,21 +29,15 @@ abstract class RepositoryModule {
 
     @Binds
     @Singleton
-    abstract fun bindEventRepository(
-        eventRepositoryImpl: EventRepositoryImpl
-    ): EventRepository
+    abstract fun bindEventRepository(eventRepositoryImpl: EventRepositoryImpl): EventRepository
 
     @Binds
     @Singleton
-    abstract fun bindPaymentRepository(
-        paymentRepositoryImpl: PaymentRepositoryImpl
-    ): PaymentRepository
+    abstract fun bindPaymentRepository(paymentRepositoryImpl: PaymentRepositoryImpl): PaymentRepository
 
     @Binds
     @Singleton
-    abstract fun bindTicketRepository(
-        ticketRepositoryImpl: TicketRepositoryImpl
-    ): TicketRepository
+    abstract fun bindTicketRepository(ticketRepositoryImpl: TicketRepositoryImpl): TicketRepository
 }
 
 @Module
@@ -56,23 +50,19 @@ object DataModule {
 
     @Provides
     @Singleton
-    fun provideDatabase(@ApplicationContext context: Context): AppDatabase {
-        return Room.databaseBuilder(
-            context,
-            AppDatabase::class.java,
-            "cielo_tickets_db"
-        ).fallbackToDestructiveMigration()
-            .build()
-    }
+    fun provideDatabase(@ApplicationContext context: Context): AppDatabase = Room.databaseBuilder(
+        context,
+        AppDatabase::class.java,
+        "cielo_tickets_db",
+    ).fallbackToDestructiveMigration()
+        .build()
 
     @Provides
     fun provideEventDao(database: AppDatabase): EventDao = database.eventDao()
 
     @Provides
-    fun providePendingPurchaseDao(database: AppDatabase): PendingPurchaseDao =
-        database.pendingPurchaseDao()
+    fun providePendingPurchaseDao(database: AppDatabase): PendingPurchaseDao = database.pendingPurchaseDao()
 
     @Provides
-    fun provideTicketDao(database: AppDatabase): TicketDao =
-        database.ticketDao()
+    fun provideTicketDao(database: AppDatabase): TicketDao = database.ticketDao()
 }

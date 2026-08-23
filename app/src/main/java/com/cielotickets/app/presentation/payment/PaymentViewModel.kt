@@ -2,6 +2,7 @@ package com.cielotickets.app.presentation.payment
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import com.cielotickets.app.BuildConfig
 import com.cielotickets.app.data.payment.bus.PaymentCallbackBus
 import com.cielotickets.app.domain.model.PaymentState
 import com.cielotickets.app.domain.repository.PaymentRepository
@@ -24,18 +25,16 @@ class PaymentViewModel @Inject constructor(
     private val ticketRepository: TicketRepository,
     private val createTicketUseCase: CreateTicketUseCase,
     private val paymentCallbackBus: PaymentCallbackBus,
-    savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle,
 ) : BaseViewModel<PaymentContract.State, PaymentContract.Intent, PaymentContract.Effect>() {
 
     private var idempotencyKey: String? = null
-    
+
     private val eventId: String? = savedStateHandle["eventId"]
     private val quantity: Int = savedStateHandle["quantity"] ?: 0
     private val totalPriceCents: Float = savedStateHandle["totalPrice"] ?: 0f
 
-    override fun createInitialState(): PaymentContract.State {
-        return PaymentContract.State()
-    }
+    override fun createInitialState(): PaymentContract.State = PaymentContract.State()
 
     init {
         eventId?.let {
@@ -60,22 +59,22 @@ class PaymentViewModel @Inject constructor(
     private fun loadPaymentInfo(intent: PaymentContract.Intent.LoadPaymentInfo) {
         viewModelScope.launch {
             setState { copy(isLoading = true) }
-            
+
             getEventByIdUseCase(intent.eventId).onSuccess { event ->
                 idempotencyKey = generatePurchaseUseCase(
                     eventId = event.id,
                     quantity = intent.quantity,
                     totalPriceCents = intent.totalPriceCents,
-                    existingIdempotencyKey = idempotencyKey
+                    existingIdempotencyKey = idempotencyKey,
                 )
-                
-                setState { 
+
+                setState {
                     copy(
-                        event = event, 
-                        quantity = intent.quantity, 
+                        event = event,
+                        quantity = intent.quantity,
                         totalPriceCents = intent.totalPriceCents,
-                        isLoading = false
-                    ) 
+                        isLoading = false,
+                    )
                 }
             }.onFailure {
                 setState { copy(isLoading = false) }
@@ -89,13 +88,23 @@ class PaymentViewModel @Inject constructor(
         val event = state.event ?: return
         val key = idempotencyKey ?: return
 
+        // Validação de credenciais da Cielo
+        if (BuildConfig.CIELO_CLIENT_ID.isBlank() || BuildConfig.CIELO_ACCESS_TOKEN.isBlank()) {
+            setEffect {
+                PaymentContract.Effect.ShowError(
+                    "Credenciais da Cielo não configuradas. Adicione CIELO_CLIENT_ID e CIELO_ACCESS_TOKEN ao local.properties para testar o pagamento.",
+                )
+            }
+            return
+        }
+
         setState { copy(paymentState = PaymentState.Processing) }
 
         val uri = paymentRepository.buildPaymentUri(
             eventId = event.id,
             quantity = state.quantity,
             unitPriceCents = (event.price).toInt(),
-            idempotencyKey = key
+            idempotencyKey = key,
         )
 
         setEffect { PaymentContract.Effect.LaunchPaymentIntent(uri) }
@@ -166,7 +175,7 @@ class PaymentViewModel @Inject constructor(
                 eventId = event.id,
                 eventName = event.name,
                 purchaseReference = key,
-                cieloOrderId = cieloOrderId
+                cieloOrderId = cieloOrderId,
             )
 
             setState { copy(generatedTicket = ticket) }

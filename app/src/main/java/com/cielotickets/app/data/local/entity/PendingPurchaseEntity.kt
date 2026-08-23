@@ -10,5 +10,5 @@ data class PendingPurchaseEntity(
     val quantity: Int,
     val totalPriceCents: Int,
     val status: String,
-    val createdAt: Long = System.currentTimeMillis()
+    val createdAt: Long = System.currentTimeMillis(),
 )

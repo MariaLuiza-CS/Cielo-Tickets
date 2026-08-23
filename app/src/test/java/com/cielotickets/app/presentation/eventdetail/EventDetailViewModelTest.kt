@@ -36,8 +36,8 @@ class EventDetailViewModelTest {
                 location = "Test Location",
                 price = 100.0,
                 imageUrl = "",
-                availableTickets = 2
-            )
+                availableTickets = 2,
+            ),
         )
     }
 
@@ -52,8 +52,10 @@ class EventDetailViewModelTest {
         val viewModel = EventDetailViewModel(getEventByIdUseCase, savedStateHandle)
 
         // Act
-        viewModel.sendIntent(EventDetailContract.Intent.IncreaseQuantity) // 1 -> 2
-        viewModel.sendIntent(EventDetailContract.Intent.IncreaseQuantity) // 2 -> 2 (limit)
+        // 1 -> 2
+        viewModel.sendIntent(EventDetailContract.Intent.IncreaseQuantity)
+        // 2 -> 2 (limit)
+        viewModel.sendIntent(EventDetailContract.Intent.IncreaseQuantity)
 
         // Assert
         viewModel.uiState.test {
@@ -67,7 +69,8 @@ class EventDetailViewModelTest {
         val viewModel = EventDetailViewModel(getEventByIdUseCase, savedStateHandle)
 
         // Act
-        viewModel.sendIntent(EventDetailContract.Intent.DecreaseQuantity) // 1 -> 1 (limit)
+        // 1 -> 1 (limit)
+        viewModel.sendIntent(EventDetailContract.Intent.DecreaseQuantity)
 
         // Assert
         viewModel.uiState.test {

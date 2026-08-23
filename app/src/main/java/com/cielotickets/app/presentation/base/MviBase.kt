@@ -35,14 +35,14 @@ abstract class BaseViewModel<S : UiState, I : UiIntent, E : UiEffect> : ViewMode
     private val _uiState: MutableStateFlow<S> by lazy { MutableStateFlow(createInitialState()) }
     val uiState: StateFlow<S> by lazy { _uiState.asStateFlow() }
 
-    private val _effect: Channel<E> = Channel()
-    val effect = _effect.receiveAsFlow()
+    private val effectChannel: Channel<E> = Channel()
+    val effect = effectChannel.receiveAsFlow()
 
-    private val _intent: MutableSharedFlow<I> = MutableSharedFlow()
+    private val intentFlow: MutableSharedFlow<I> = MutableSharedFlow()
 
     init {
         viewModelScope.launch {
-            _intent.collect {
+            intentFlow.collect {
                 handleIntent(it)
             }
         }
@@ -50,7 +50,7 @@ abstract class BaseViewModel<S : UiState, I : UiIntent, E : UiEffect> : ViewMode
 
     fun sendIntent(intent: I) {
         viewModelScope.launch {
-            _intent.emit(intent)
+            intentFlow.emit(intent)
         }
     }
 
@@ -62,6 +62,6 @@ abstract class BaseViewModel<S : UiState, I : UiIntent, E : UiEffect> : ViewMode
 
     protected fun setEffect(builder: () -> E) {
         val effectValue = builder()
-        viewModelScope.launch { _effect.send(effectValue) }
+        viewModelScope.launch { effectChannel.send(effectValue) }
     }
 }

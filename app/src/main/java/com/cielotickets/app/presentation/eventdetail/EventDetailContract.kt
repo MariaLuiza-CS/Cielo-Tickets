@@ -7,12 +7,7 @@ import com.cielotickets.app.presentation.base.UiState
 
 class EventDetailContract {
 
-    data class State(
-        val event: Event? = null,
-        val quantity: Int = 1,
-        val isLoading: Boolean = false,
-        val errorMessage: String? = null
-    ) : UiState {
+    data class State(val event: Event? = null, val quantity: Int = 1, val isLoading: Boolean = false, val errorMessage: String? = null) : UiState {
         val totalPrice: Double
             get() = (event?.price ?: 0.0) * quantity
     }
@@ -25,11 +20,7 @@ class EventDetailContract {
     }
 
     sealed interface Effect : UiEffect {
-        data class NavigateToPayment(
-            val eventId: String,
-            val quantity: Int,
-            val totalPrice: Double
-        ) : Effect
+        data class NavigateToPayment(val eventId: String, val quantity: Int, val totalPrice: Double) : Effect
         data class ShowError(val message: String) : Effect
     }
 }

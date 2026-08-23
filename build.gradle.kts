@@ -9,4 +9,5 @@ plugins {
     alias(libs.plugins.google.gms.google.services) apply false
     alias(libs.plugins.firebase.crashlytics) apply false
     alias(libs.plugins.detekt) apply false
+    alias(libs.plugins.spotless) apply false
 }

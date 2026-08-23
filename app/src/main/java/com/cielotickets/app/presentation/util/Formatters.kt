@@ -9,9 +9,7 @@ fun Int.toBrazilianCurrency(): String {
     return String.format(locale, "R$ %.2f", this / 100.0)
 }
 
-fun Double.toBrazilianCurrency(): String {
-    return this.toInt().toBrazilianCurrency()
-}
+fun Double.toBrazilianCurrency(): String = this.toInt().toBrazilianCurrency()
 
 fun Long.toBrazilianDateTime(): String {
     val locale = Locale.Builder().setLanguage("pt").setRegion("BR").build()
@@ -28,7 +26,7 @@ fun String.toFormattedEventDate(): String {
         val locale = Locale.Builder().setLanguage("pt").setRegion("BR").build()
         val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", locale)
         val date = inputFormat.parse(this) ?: return this
-        
+
         val outputFormat = SimpleDateFormat("dd 'de' MMMM 'de' yyyy, 'às' HH'h'", locale)
         outputFormat.format(date)
     } catch (e: Exception) {

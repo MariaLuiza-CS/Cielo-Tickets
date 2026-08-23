@@ -10,6 +10,7 @@ plugins {
     alias(libs.plugins.google.gms.google.services)
     alias(libs.plugins.firebase.crashlytics)
     alias(libs.plugins.detekt)
+    alias(libs.plugins.spotless)
 }
 
 android {
@@ -40,7 +41,7 @@ android {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
         }
     }
@@ -63,6 +64,26 @@ android {
 detekt {
     config.setFrom("$rootDir/config/detekt/detekt.yml")
     buildUponDefaultConfig = true
+}
+
+spotless {
+    kotlin {
+        target("src/**/*.kt")
+        ktlint("1.3.1")
+            .editorConfigOverride(
+                mapOf(
+                    "indent_size" to "4",
+                    "max_line_length" to "160",
+                    "ktlint_standard_function-naming" to "disabled",
+                ),
+            )
+        trimTrailingWhitespace()
+        endWithNewline()
+    }
+    kotlinGradle {
+        target("*.gradle.kts")
+        ktlint()
+    }
 }
 
 dependencies {
@@ -102,6 +123,7 @@ dependencies {
     implementation(libs.serialization.json)
 
     implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.lifecycle.runtime.compose)
     // ...
@@ -111,7 +133,7 @@ dependencies {
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.turbine)
     testImplementation(libs.robolectric)
-    
+
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     androidTestImplementation(libs.androidx.espresso.core)

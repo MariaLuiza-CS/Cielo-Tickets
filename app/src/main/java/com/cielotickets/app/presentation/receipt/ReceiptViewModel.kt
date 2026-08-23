@@ -14,14 +14,12 @@ import javax.inject.Inject
 class ReceiptViewModel @Inject constructor(
     private val ticketRepository: TicketRepository,
     private val getEventByIdUseCase: GetEventByIdUseCase,
-    savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle,
 ) : BaseViewModel<ReceiptContract.State, ReceiptContract.Intent, ReceiptContract.Effect>() {
 
     private val ticketId: String? = savedStateHandle["ticketId"]
 
-    override fun createInitialState(): ReceiptContract.State {
-        return ReceiptContract.State()
-    }
+    override fun createInitialState(): ReceiptContract.State = ReceiptContract.State()
 
     init {
         ticketId?.let {

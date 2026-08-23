@@ -10,11 +10,7 @@ import com.cielotickets.app.presentation.base.UiState
  */
 class EventListContract {
 
-    data class State(
-        val events: List<Event> = emptyList(),
-        val isLoading: Boolean = false,
-        val errorMessage: String? = null
-    ) : UiState
+    data class State(val events: List<Event> = emptyList(), val isLoading: Boolean = false, val errorMessage: String? = null) : UiState
 
     sealed interface Intent : UiIntent {
         data object LoadEvents : Intent

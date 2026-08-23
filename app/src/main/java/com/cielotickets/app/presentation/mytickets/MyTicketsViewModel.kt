@@ -9,13 +9,10 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MyTicketsViewModel @Inject constructor(
-    private val getMyTicketsUseCase: GetMyTicketsUseCase
-) : BaseViewModel<MyTicketsContract.State, MyTicketsContract.Intent, MyTicketsContract.Effect>() {
+class MyTicketsViewModel @Inject constructor(private val getMyTicketsUseCase: GetMyTicketsUseCase) :
+    BaseViewModel<MyTicketsContract.State, MyTicketsContract.Intent, MyTicketsContract.Effect>() {
 
-    override fun createInitialState(): MyTicketsContract.State {
-        return MyTicketsContract.State()
-    }
+    override fun createInitialState(): MyTicketsContract.State = MyTicketsContract.State()
 
     init {
         sendIntent(MyTicketsContract.Intent.LoadTickets)
@@ -34,12 +31,12 @@ class MyTicketsViewModel @Inject constructor(
         viewModelScope.launch {
             setState { copy(isLoading = true) }
             getMyTicketsUseCase().collectLatest { tickets ->
-                setState { 
+                setState {
                     copy(
-                        tickets = tickets, 
+                        tickets = tickets,
                         isLoading = false,
-                        isEmpty = tickets.isEmpty()
-                    ) 
+                        isEmpty = tickets.isEmpty(),
+                    )
                 }
             }
         }

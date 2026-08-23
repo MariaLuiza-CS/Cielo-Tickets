@@ -10,5 +10,5 @@ data class EventDto(
     val location: String = "",
     val price: Double = 0.0,
     val imageUrl: String = "",
-    val availableTickets: Int = 0
+    val availableTickets: Int = 0,
 )

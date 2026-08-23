@@ -47,10 +47,12 @@ class PaymentViewModelTest {
     fun setup() {
         Dispatchers.setMain(testDispatcher)
         every { paymentCallbackBus.events } returns busFlow
-        coEvery { getEventByIdUseCase(any()) } returns Result.success(mockk<Event>(relaxed = true).apply {
-            every { id } returns eventId
-            every { price } returns 1000.0
-        })
+        coEvery { getEventByIdUseCase(any()) } returns Result.success(
+            mockk<Event>(relaxed = true).apply {
+                every { id } returns eventId
+                every { price } returns 1000.0
+            },
+        )
         coEvery { generatePurchaseUseCase(any(), any(), any(), any()) } returns "current-key"
     }
 
@@ -60,51 +62,49 @@ class PaymentViewModelTest {
     }
 
     @Test
-    fun `handleCallback should show error when reference does not match idempotencyKey`() =
-        runTest {
-            // Arrange
-            val viewModel = createViewModel()
-            val callbackUri = "order://response?response=..."
-            val approvedState = PaymentState.Approved(orderId = "order1", reference = "WRONG-KEY")
+    fun `handleCallback should show error when reference does not match idempotencyKey`() = runTest {
+        // Arrange
+        val viewModel = createViewModel()
+        val callbackUri = "order://response?response=..."
+        val approvedState = PaymentState.Approved(orderId = "order1", reference = "WRONG-KEY")
 
-            every { paymentRepository.parsePaymentCallback(callbackUri) } returns approvedState
+        every { paymentRepository.parsePaymentCallback(callbackUri) } returns approvedState
 
-            // Act & Assert
-            viewModel.effect.test {
-                viewModel.sendIntent(PaymentContract.Intent.PaymentCallbackReceived(callbackUri))
-                val effect = awaitItem()
-                assertTrue(effect is PaymentContract.Effect.ShowError)
-                coVerify(exactly = 0) { createTicketUseCase(any(), any(), any(), any()) }
-            }
+        // Act & Assert
+        viewModel.effect.test {
+            viewModel.sendIntent(PaymentContract.Intent.PaymentCallbackReceived(callbackUri))
+            val effect = awaitItem()
+            assertTrue(effect is PaymentContract.Effect.ShowError)
+            coVerify(exactly = 0) { createTicketUseCase(any(), any(), any(), any()) }
         }
+    }
 
     @Test
-    fun `createTicket should reuse existing ticket when purchaseReference already exists`() =
-        runTest {
-            // Arrange
-            val viewModel = createViewModel()
-            val currentKey = "current-key"
-            val existingTicket = mockk<Ticket>(relaxed = true).apply {
-                every { ticketId } returns "ticket-123"
-            }
-
-            coEvery { ticketRepository.getTicketByReference(currentKey) } returns existingTicket
-
-            // Act & Assert
-            viewModel.effect.test {
-                // Chamamos diretamente o método privado createTicket via reflection ou simulando o sucesso do callback
-                val callbackUri = "order://response?response=..."
-                val approvedState =
-                    PaymentState.Approved(orderId = "order1", reference = currentKey)
-                every { paymentRepository.parsePaymentCallback(callbackUri) } returns approvedState
-
-                viewModel.sendIntent(PaymentContract.Intent.PaymentCallbackReceived(callbackUri))
-
-                val effect = awaitItem()
-                assertTrue(effect is PaymentContract.Effect.NavigateToReceipt)
-                coVerify(exactly = 0) { createTicketUseCase(any(), any(), any(), any()) }
-            }
+    fun `createTicket should reuse existing ticket when purchaseReference already exists`() = runTest {
+        // Arrange
+        val viewModel = createViewModel()
+        val currentKey = "current-key"
+        val existingTicket = mockk<Ticket>(relaxed = true).apply {
+            every { ticketId } returns "ticket-123"
         }
+
+        coEvery { ticketRepository.getTicketByReference(currentKey) } returns existingTicket
+
+        // Act & Assert
+        viewModel.effect.test {
+            // Chamamos diretamente o método privado createTicket via reflection ou simulando o sucesso do callback
+            val callbackUri = "order://response?response=..."
+            val approvedState =
+                PaymentState.Approved(orderId = "order1", reference = currentKey)
+            every { paymentRepository.parsePaymentCallback(callbackUri) } returns approvedState
+
+            viewModel.sendIntent(PaymentContract.Intent.PaymentCallbackReceived(callbackUri))
+
+            val effect = awaitItem()
+            assertTrue(effect is PaymentContract.Effect.NavigateToReceipt)
+            coVerify(exactly = 0) { createTicketUseCase(any(), any(), any(), any()) }
+        }
+    }
 
     private fun createViewModel() = PaymentViewModel(
         getEventByIdUseCase,
@@ -113,6 +113,6 @@ class PaymentViewModelTest {
         ticketRepository,
         createTicketUseCase,
         paymentCallbackBus,
-        savedStateHandle
+        savedStateHandle,
     )
 }

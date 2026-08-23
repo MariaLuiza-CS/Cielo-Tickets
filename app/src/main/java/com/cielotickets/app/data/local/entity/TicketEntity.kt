@@ -11,5 +11,5 @@ data class TicketEntity(
     val purchaseReference: String,
     val cieloOrderId: String?,
     val qrPayload: String,
-    val createdAt: Long
+    val createdAt: Long,
 )

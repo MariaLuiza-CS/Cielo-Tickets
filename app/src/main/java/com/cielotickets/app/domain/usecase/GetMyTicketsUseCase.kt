@@ -5,10 +5,6 @@ import com.cielotickets.app.domain.repository.TicketRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class GetMyTicketsUseCase @Inject constructor(
-    private val ticketRepository: TicketRepository
-) {
-    operator fun invoke(): Flow<List<Ticket>> {
-        return ticketRepository.getAllTickets()
-    }
+class GetMyTicketsUseCase @Inject constructor(private val ticketRepository: TicketRepository) {
+    operator fun invoke(): Flow<List<Ticket>> = ticketRepository.getAllTickets()
 }

@@ -9,16 +9,12 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class EventDetailViewModel @Inject constructor(
-    private val getEventByIdUseCase: GetEventByIdUseCase,
-    savedStateHandle: SavedStateHandle
-) : BaseViewModel<EventDetailContract.State, EventDetailContract.Intent, EventDetailContract.Effect>() {
+class EventDetailViewModel @Inject constructor(private val getEventByIdUseCase: GetEventByIdUseCase, savedStateHandle: SavedStateHandle) :
+    BaseViewModel<EventDetailContract.State, EventDetailContract.Intent, EventDetailContract.Effect>() {
 
     private val eventId: String? = savedStateHandle["eventId"]
 
-    override fun createInitialState(): EventDetailContract.State {
-        return EventDetailContract.State()
-    }
+    override fun createInitialState(): EventDetailContract.State = EventDetailContract.State()
 
     init {
         eventId?.let {
@@ -45,13 +41,13 @@ class EventDetailViewModel @Inject constructor(
                     setState { copy(isLoading = false, event = event) }
                 },
                 onFailure = { error ->
-                    setState { 
+                    setState {
                         copy(
-                            isLoading = false, 
-                            errorMessage = error.message ?: "Erro ao carregar detalhes" 
-                        ) 
+                            isLoading = false,
+                            errorMessage = error.message ?: "Erro ao carregar detalhes",
+                        )
                     }
-                }
+                },
             )
         }
     }
@@ -74,12 +70,12 @@ class EventDetailViewModel @Inject constructor(
     private fun proceedToPayment() {
         val state = uiState.value
         val event = state.event ?: return
-        setEffect { 
+        setEffect {
             EventDetailContract.Effect.NavigateToPayment(
                 eventId = event.id,
                 quantity = state.quantity,
-                totalPrice = state.totalPrice
-            ) 
+                totalPrice = state.totalPrice,
+            )
         }
     }
 }
