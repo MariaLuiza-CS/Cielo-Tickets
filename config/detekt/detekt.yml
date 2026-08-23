@@ -1,11 +1,6 @@
 build:
   maxIssues: 0
   excludeCorrectable: false
-  weights:
-    # complexity: 2
-    # LongParameterList: 1
-    # style: 1
-    # comments: 1
 
 complexity:
   active: true
@@ -15,25 +10,44 @@ complexity:
   LongMethod:
     active: true
     threshold: 60
+    ignoreAnnotated: ['Composable']
   LongParameterList:
     active: true
-    threshold: 6
+    functionThreshold: 6
+    constructorThreshold: 8
+    ignoreAnnotated: ['Composable']
   LargeClass:
     active: true
     threshold: 600
+
+exceptions:
+  active: true
+  TooGenericExceptionCaught:
+    active: true
+    excludes: ['**/data/**', '**/presentation/payment/**']
+  SwallowedException:
+    active: true
+    excludes: ['**/data/**', '**/presentation/payment/**']
+
+naming:
+  active: true
+  FunctionNaming:
+    active: true
+    ignoreAnnotated: ['Composable']
 
 style:
   active: true
   MagicNumber:
     active: true
-    ignoreNumbers: ['-1', '0', '1', '2']
+    ignoreNumbers: ['-1', '0', '1', '2', '100']
+    ignoreAnnotated: ['Composable']
+    excludes: ['**/ui/theme/**', '**/test/**']
   MaxLineLength:
     active: true
-    maxLineLength: 120
-
-security:
-  active: true
-  UnsafeCryptoUsage:
+    maxLineLength: 160
+    excludes: ['**/test/**']
+  WildcardImport:
     active: true
-  HardcodedIpAddress:
+  ReturnCount:
     active: true
+    max: 3

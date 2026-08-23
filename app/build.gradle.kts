@@ -8,6 +8,7 @@ plugins {
     id("com.google.devtools.ksp")
     id("org.jetbrains.kotlin.plugin.serialization")
     alias(libs.plugins.google.gms.google.services)
+    alias(libs.plugins.firebase.crashlytics)
     alias(libs.plugins.detekt)
 }
 
@@ -77,6 +78,7 @@ dependencies {
     // Firebase
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.firestore)
+    implementation(libs.firebase.crashlytics)
     implementation(libs.coil.compose)
     implementation(libs.zxing.core)
 

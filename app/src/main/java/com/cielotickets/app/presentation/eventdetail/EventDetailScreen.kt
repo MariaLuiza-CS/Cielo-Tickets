@@ -1,17 +1,41 @@
 package com.cielotickets.app.presentation.eventdetail
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Remove
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -36,6 +60,7 @@ fun EventDetailScreen(
                 is EventDetailContract.Effect.NavigateToPayment -> {
                     onNavigateToPayment(effect.eventId, effect.quantity, effect.totalPrice)
                 }
+
                 is EventDetailContract.Effect.ShowError -> {
                     snackbarHostState.showSnackbar(effect.message)
                 }
@@ -49,7 +74,10 @@ fun EventDetailScreen(
                 title = { Text("Detalhes do Evento") },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Voltar")
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Voltar"
+                        )
                     }
                 }
             )
@@ -78,7 +106,7 @@ fun EventDetailScreen(
                     ) {
                         AsyncImage(
                             model = event.imageUrl,
-                            contentDescription = null,
+                            contentDescription = "Imagem do evento ${event.name}",
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(250.dp),
@@ -101,31 +129,44 @@ fun EventDetailScreen(
                                 style = MaterialTheme.typography.bodyLarge
                             )
                             Spacer(modifier = Modifier.height(16.dp))
-                            
+
                             HorizontalDivider()
-                            
+
                             Spacer(modifier = Modifier.height(16.dp))
-                            
+
                             Text(
                                 text = "Quantidade",
                                 style = MaterialTheme.typography.titleMedium,
                                 fontWeight = FontWeight.Bold
                             )
-                            
+
                             Row(
                                 modifier = Modifier.padding(vertical = 8.dp),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
-                                IconButton(onClick = { viewModel.sendIntent(EventDetailContract.Intent.DecreaseQuantity) }) {
-                                    Icon(imageVector = Icons.Default.Remove, contentDescription = "Diminuir")
+                                IconButton(
+                                    onClick = { viewModel.sendIntent(EventDetailContract.Intent.DecreaseQuantity) },
+                                    modifier = Modifier.semantics {
+                                        contentDescription = "Diminuir quantidade de ingressos"
+                                    }
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Remove,
+                                        contentDescription = null
+                                    )
                                 }
                                 Text(
                                     text = state.quantity.toString(),
                                     style = MaterialTheme.typography.headlineSmall,
                                     modifier = Modifier.padding(horizontal = 16.dp)
                                 )
-                                IconButton(onClick = { viewModel.sendIntent(EventDetailContract.Intent.IncreaseQuantity) }) {
-                                    Icon(imageVector = Icons.Default.Add, contentDescription = "Aumentar")
+                                IconButton(
+                                    onClick = { viewModel.sendIntent(EventDetailContract.Intent.IncreaseQuantity) },
+                                    modifier = Modifier.semantics {
+                                        contentDescription = "Aumentar quantidade de ingressos"
+                                    }
+                                ) {
+                                    Icon(imageVector = Icons.Default.Add, contentDescription = null)
                                 }
                                 Spacer(modifier = Modifier.weight(1f))
                                 Text(
@@ -134,9 +175,9 @@ fun EventDetailScreen(
                                     color = MaterialTheme.colorScheme.secondary
                                 )
                             }
-                            
+
                             Spacer(modifier = Modifier.height(24.dp))
-                            
+
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
                                 verticalAlignment = Alignment.CenterVertically,
@@ -155,9 +196,9 @@ fun EventDetailScreen(
                                     fontWeight = FontWeight.ExtraBold
                                 )
                             }
-                            
+
                             Spacer(modifier = Modifier.height(32.dp))
-                            
+
                             Button(
                                 onClick = { viewModel.sendIntent(EventDetailContract.Intent.ProceedToPayment) },
                                 modifier = Modifier.fillMaxWidth(),

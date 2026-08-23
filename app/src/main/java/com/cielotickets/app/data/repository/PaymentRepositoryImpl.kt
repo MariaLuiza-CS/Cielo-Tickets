@@ -5,7 +5,10 @@ import com.cielotickets.app.BuildConfig
 import com.cielotickets.app.data.local.dao.PendingPurchaseDao
 import com.cielotickets.app.data.local.entity.PendingPurchaseEntity
 import com.cielotickets.app.data.payment.CieloDeepLinkConstants
-import com.cielotickets.app.data.payment.model.*
+import com.cielotickets.app.data.payment.model.PaymentErrorDto
+import com.cielotickets.app.data.payment.model.PaymentItemDto
+import com.cielotickets.app.data.payment.model.PaymentRequestDto
+import com.cielotickets.app.data.payment.model.PaymentResponseDto
 import com.cielotickets.app.data.payment.util.Base64Utils
 import com.cielotickets.app.domain.model.PaymentState
 import com.cielotickets.app.domain.repository.PaymentRepository
@@ -18,8 +21,8 @@ class PaymentRepositoryImpl @Inject constructor(
     private val pendingPurchaseDao: PendingPurchaseDao
 ) : PaymentRepository {
 
-    private val json = Json { 
-        ignoreUnknownKeys = true 
+    private val json = Json {
+        ignoreUnknownKeys = true
         encodeDefaults = true
     }
 
@@ -47,7 +50,9 @@ class PaymentRepositoryImpl @Inject constructor(
         val jsonString = json.encodeToString(requestDto)
         val base64Request = Base64Utils.encode(jsonString)
 
-        return "${CieloDeepLinkConstants.PAYMENT_URI_SCHEME}://${CieloDeepLinkConstants.PAYMENT_URI_HOST}?request=$base64Request&urlCallback=${CieloDeepLinkConstants.CALLBACK_URI}"
+        return "${CieloDeepLinkConstants.PAYMENT_URI_SCHEME}" +
+                "://${CieloDeepLinkConstants.PAYMENT_URI_HOST}" +
+                "?request=$base64Request&urlCallback=${CieloDeepLinkConstants.CALLBACK_URI}"
     }
 
     override fun parsePaymentCallback(callbackData: String): PaymentState {

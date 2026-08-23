@@ -10,6 +10,7 @@ import com.cielotickets.app.domain.usecase.CreateTicketUseCase
 import com.cielotickets.app.domain.usecase.GeneratePurchaseUseCase
 import com.cielotickets.app.domain.usecase.GetEventByIdUseCase
 import com.cielotickets.app.presentation.base.BaseViewModel
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -101,39 +102,49 @@ class PaymentViewModel @Inject constructor(
     }
 
     private fun handleCallback(rawUri: String) {
-        val resultState = paymentRepository.parsePaymentCallback(rawUri)
-        val currentKey = idempotencyKey ?: ""
+        try {
+            val resultState = paymentRepository.parsePaymentCallback(rawUri)
+            val currentKey = idempotencyKey ?: ""
 
-        viewModelScope.launch {
-            when (resultState) {
-                is PaymentState.Approved -> {
-                    if (resultState.reference == currentKey) {
-                        paymentRepository.updatePurchaseStatus(currentKey, "PAID")
+            viewModelScope.launch {
+                when (resultState) {
+                    is PaymentState.Approved -> {
+                        if (resultState.reference == currentKey) {
+                            paymentRepository.updatePurchaseStatus(currentKey, "PAID")
+                            setState { copy(paymentState = resultState) }
+                            createTicket(resultState.orderId)
+                        } else {
+                            val error = PaymentState.Error(0, "Resposta de pagamento não corresponde a esta compra")
+                            setState { copy(paymentState = error) }
+                            setEffect { PaymentContract.Effect.ShowError(error.reason) }
+                        }
+                    }
+                    is PaymentState.Denied -> {
+                        paymentRepository.updatePurchaseStatus(currentKey, "DENIED")
                         setState { copy(paymentState = resultState) }
-                        createTicket(resultState.orderId)
-                    } else {
-                        val error = PaymentState.Error(0, "Resposta de pagamento não corresponde a esta compra")
-                        setState { copy(paymentState = error) }
-                        setEffect { PaymentContract.Effect.ShowError(error.reason) }
+                    }
+                    is PaymentState.Cancelled -> {
+                        paymentRepository.updatePurchaseStatus(currentKey, "CANCELLED")
+                        setState { copy(paymentState = resultState) }
+                    }
+                    is PaymentState.Error -> {
+                        paymentRepository.updatePurchaseStatus(currentKey, "ERROR")
+                        setState { copy(paymentState = resultState) }
+                        setEffect { PaymentContract.Effect.ShowError("Erro no pagamento: ${resultState.reason}") }
+                        FirebaseCrashlytics.getInstance().apply {
+                            setCustomKey("cielo_error_code", resultState.code)
+                            setCustomKey("idempotency_key", currentKey)
+                            recordException(Exception("Erro de pagamento Cielo: ${resultState.reason}"))
+                        }
+                    }
+                    else -> {
+                        setState { copy(paymentState = resultState) }
                     }
                 }
-                is PaymentState.Denied -> {
-                    paymentRepository.updatePurchaseStatus(currentKey, "DENIED")
-                    setState { copy(paymentState = resultState) }
-                }
-                is PaymentState.Cancelled -> {
-                    paymentRepository.updatePurchaseStatus(currentKey, "CANCELLED")
-                    setState { copy(paymentState = resultState) }
-                }
-                is PaymentState.Error -> {
-                    paymentRepository.updatePurchaseStatus(currentKey, "ERROR")
-                    setState { copy(paymentState = resultState) }
-                    setEffect { PaymentContract.Effect.ShowError("Erro no pagamento: ${resultState.reason}") }
-                }
-                else -> {
-                    setState { copy(paymentState = resultState) }
-                }
             }
+        } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
+            setState { copy(paymentState = PaymentState.Error(-1, "Erro inesperado ao processar retorno")) }
         }
     }
 

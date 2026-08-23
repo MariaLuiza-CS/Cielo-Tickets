@@ -18,5 +18,8 @@ interface PendingPurchaseDao {
     suspend fun updateStatus(key: String, status: String)
 
     @Query("SELECT * FROM pending_purchases WHERE eventId = :eventId AND quantity = :quantity AND status = 'PENDING' ORDER BY createdAt DESC LIMIT 1")
-    suspend fun findPendingByEventAndQuantity(eventId: String, quantity: Int): PendingPurchaseEntity?
+    suspend fun findPendingByEventAndQuantity(
+        eventId: String,
+        quantity: Int
+    ): PendingPurchaseEntity?
 }

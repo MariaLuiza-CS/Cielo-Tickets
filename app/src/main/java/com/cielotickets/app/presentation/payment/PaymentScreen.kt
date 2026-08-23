@@ -2,11 +2,36 @@ package com.cielotickets.app.presentation.payment
 
 import android.content.Intent
 import android.net.Uri
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -40,12 +65,18 @@ fun PaymentScreen(
                         }
                         context.startActivity(intent)
                     } catch (e: Exception) {
-                        viewModel.sendIntent(PaymentContract.Intent.PaymentCallbackReceived("error://response?response=eyJjb2RlIjo0LCJyZWFzb24iOiJBcHAgQ2llbG8gU21hcnQgbsOjbyBlbmNvbnRyYWRvIn0="))
+                        viewModel.sendIntent(
+                            PaymentContract.Intent.PaymentCallbackReceived(
+                                "error://response?response=eyJjb2RlIjo0LCJyZWFzb24iOiJBcHAgQ2llbG8gU21hcnQgbsOjbyBlbmNvbnRyYWRvIn0="
+                            )
+                        )
                     }
                 }
+
                 is PaymentContract.Effect.NavigateToReceipt -> {
                     onNavigateToReceipt(effect.ticketId)
                 }
+
                 is PaymentContract.Effect.ShowError -> {
                     snackbarHostState.showSnackbar(effect.message)
                 }
@@ -59,7 +90,10 @@ fun PaymentScreen(
                 title = { Text("Checkout") },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Voltar")
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Voltar"
+                        )
                     }
                 }
             )
@@ -79,28 +113,41 @@ fun PaymentScreen(
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold
                 )
-                
+
                 Spacer(modifier = Modifier.height(24.dp))
-                
+
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
                 ) {
                     Column(modifier = Modifier.padding(16.dp)) {
-                        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
                             Text(text = "Evento:", fontWeight = FontWeight.Bold)
                             Text(text = event.name)
                         }
                         Spacer(modifier = Modifier.height(8.dp))
-                        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
                             Text(text = "Quantidade:", fontWeight = FontWeight.Bold)
                             Text(text = "${state.quantity}x")
                         }
                         Spacer(modifier = Modifier.height(16.dp))
                         HorizontalDivider()
                         Spacer(modifier = Modifier.height(16.dp))
-                        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                            Text(text = "Total:", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.ExtraBold)
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                text = "Total:",
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.ExtraBold
+                            )
                             val totalFormatted = state.totalPriceCents.toBrazilianCurrency()
                             Text(
                                 text = totalFormatted,
@@ -151,6 +198,7 @@ fun PaymentStatusView(paymentState: PaymentState) {
                 color = MaterialTheme.colorScheme.secondary
             )
         }
+
         is PaymentState.Denied -> {
             Text(
                 text = "❌ ${paymentState.reason}",
@@ -159,6 +207,7 @@ fun PaymentStatusView(paymentState: PaymentState) {
                 color = MaterialTheme.colorScheme.error
             )
         }
+
         is PaymentState.Error -> {
             Text(
                 text = "⚠️ Erro: ${paymentState.reason}",
@@ -167,6 +216,7 @@ fun PaymentStatusView(paymentState: PaymentState) {
                 color = MaterialTheme.colorScheme.error
             )
         }
+
         is PaymentState.Cancelled -> {
             Text(
                 text = "Operação cancelada",
@@ -174,6 +224,7 @@ fun PaymentStatusView(paymentState: PaymentState) {
                 style = MaterialTheme.typography.bodyLarge
             )
         }
+
         else -> {}
     }
 }
