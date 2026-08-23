@@ -16,8 +16,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.cielotickets.app.domain.model.PaymentState
+import com.cielotickets.app.presentation.util.toBrazilianCurrency
 import kotlinx.coroutines.flow.collectLatest
-import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -101,7 +101,7 @@ fun PaymentScreen(
                         Spacer(modifier = Modifier.height(16.dp))
                         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                             Text(text = "Total:", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.ExtraBold)
-                            val totalFormatted = String.format(Locale.getDefault(), "R$ %.2f", state.totalPriceCents / 100.0)
+                            val totalFormatted = state.totalPriceCents.toBrazilianCurrency()
                             Text(
                                 text = totalFormatted,
                                 style = MaterialTheme.typography.titleMedium,

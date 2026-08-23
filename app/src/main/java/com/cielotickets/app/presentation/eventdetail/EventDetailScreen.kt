@@ -17,8 +17,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
+import com.cielotickets.app.presentation.util.toBrazilianCurrency
 import kotlinx.coroutines.flow.collectLatest
-import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -147,7 +147,7 @@ fun EventDetailScreen(
                                     style = MaterialTheme.typography.titleLarge,
                                     fontWeight = FontWeight.Bold
                                 )
-                                val totalPriceFormatted = String.format(Locale.getDefault(), "R$ %.2f", state.totalPrice / 100.0)
+                                val totalPriceFormatted = state.totalPrice.toBrazilianCurrency()
                                 Text(
                                     text = totalPriceFormatted,
                                     style = MaterialTheme.typography.headlineSmall,

@@ -14,8 +14,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.cielotickets.app.domain.model.Event
+import com.cielotickets.app.presentation.util.toBrazilianCurrency
 import kotlinx.coroutines.flow.collectLatest
-import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -104,8 +104,7 @@ fun EventItem(event: Event, onClick: () -> Unit) {
             Text(text = "📅 ${event.date}", style = MaterialTheme.typography.bodyMedium)
             Text(text = "📍 ${event.location}", style = MaterialTheme.typography.bodyMedium)
             Spacer(modifier = Modifier.height(8.dp))
-            // Convertendo de centavos para reais na apresentação
-            val priceFormatted = String.format(Locale.getDefault(), "R$ %.2f", event.price / 100.0)
+            val priceFormatted = event.price.toBrazilianCurrency()
             Text(
                 text = priceFormatted,
                 style = MaterialTheme.typography.bodyLarge,
