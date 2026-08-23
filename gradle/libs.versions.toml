@@ -21,6 +21,7 @@ zxing = "3.5.3"
 mockk = "1.13.12"
 turbine = "1.1.0"
 robolectric = "4.13"
+detekt = "1.23.6"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -82,4 +83,5 @@ hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 google-gms-google-services = { id = "com.google.gms.google-services", version.ref = "googleGmsGoogleServices" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 

@@ -8,6 +8,7 @@ plugins {
     id("com.google.devtools.ksp")
     id("org.jetbrains.kotlin.plugin.serialization")
     alias(libs.plugins.google.gms.google.services)
+    alias(libs.plugins.detekt)
 }
 
 android {
@@ -56,6 +57,11 @@ android {
     testOptions {
         unitTests.isIncludeAndroidResources = true
     }
+}
+
+detekt {
+    config.setFrom("$rootDir/config/detekt/detekt.yml")
+    buildUponDefaultConfig = true
 }
 
 dependencies {
