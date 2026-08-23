@@ -84,28 +84,32 @@ tasks.register<JacocoReport>("jacocoTestReport") {
         html.required.set(true)
     }
 
-    val fileFilter = listOf(
-        "**/R.class", "**/R$*.class", "**/BuildConfig.*",
-        "**/Manifest*.*", "**/*Test*.*", "android/**/*.*",
-        "**/*_Hilt*.class", "**/Hilt_*.class", "**/*_Factory.class",
-        "**/*_MembersInjector.class", "**/*Module.class",
-        "**/dagger/hilt/**", "**/*_GeneratedInjector.class",
-        "**/*ComposableSingletons*.class", "**/ui/theme/**"
-    )
+    val fileFilter =
+        listOf(
+            "**/R.class", "**/R$*.class", "**/BuildConfig.*",
+            "**/Manifest*.*", "**/*Test*.*", "android/**/*.*",
+            "**/*_Hilt*.class", "**/Hilt_*.class", "**/*_Factory.class",
+            "**/*_MembersInjector.class", "**/*Module.class",
+            "**/dagger/hilt/**", "**/*_GeneratedInjector.class",
+            "**/*ComposableSingletons*.class", "**/ui/theme/**",
+        )
 
-    val debugTree = fileTree(
-        "${project.layout.buildDirectory.get()}/intermediates/classes/debug/transformDebugClassesWithAsm/dirs"
-    ) {
-        exclude(fileFilter)
-    }
+    val debugTree =
+        fileTree(
+            "${project.layout.buildDirectory.get()}/intermediates/classes/debug/transformDebugClassesWithAsm/dirs",
+        ) {
+            exclude(fileFilter)
+        }
 
     val mainSrc = "${project.projectDir}/src/main/java"
 
     sourceDirectories.setFrom(files(mainSrc))
     classDirectories.setFrom(files(debugTree))
-    executionData.setFrom(fileTree(project.layout.buildDirectory.get()) {
-        include("outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec")
-    })
+    executionData.setFrom(
+        fileTree(project.layout.buildDirectory.get()) {
+            include("outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec")
+        },
+    )
 }
 
 detekt {
