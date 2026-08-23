@@ -41,6 +41,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.cielotickets.app.domain.model.Event
 import com.cielotickets.app.presentation.util.toBrazilianCurrency
+import com.cielotickets.app.presentation.util.toFormattedEventDate
 import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -118,7 +119,8 @@ fun EventItem(event: Event, onClick: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
         Column {
             AsyncImage(
@@ -136,7 +138,10 @@ fun EventItem(event: Event, onClick: () -> Unit) {
                     fontWeight = FontWeight.Bold
                 )
                 Spacer(modifier = Modifier.height(4.dp))
-                Text(text = "📅 ${event.date}", style = MaterialTheme.typography.bodyMedium)
+                Text(
+                    text = "📅 ${event.date.toFormattedEventDate()}",
+                    style = MaterialTheme.typography.bodyMedium
+                )
                 Text(text = "📍 ${event.location}", style = MaterialTheme.typography.bodyMedium)
                 Spacer(modifier = Modifier.height(8.dp))
                 val priceFormatted = event.price.toBrazilianCurrency()

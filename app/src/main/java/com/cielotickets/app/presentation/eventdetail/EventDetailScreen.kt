@@ -42,6 +42,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.cielotickets.app.presentation.util.toBrazilianCurrency
+import com.cielotickets.app.presentation.util.toFormattedEventDate
 import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -121,7 +122,7 @@ fun EventDetailScreen(
                             )
                             Spacer(modifier = Modifier.height(8.dp))
                             Text(
-                                text = "📅 ${event.date}",
+                                text = "📅 ${event.date.toFormattedEventDate()}",
                                 style = MaterialTheme.typography.bodyLarge
                             )
                             Text(

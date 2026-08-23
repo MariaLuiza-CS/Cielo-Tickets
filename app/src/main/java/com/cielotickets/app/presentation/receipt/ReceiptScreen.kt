@@ -41,6 +41,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.cielotickets.app.presentation.util.toFormattedEventDate
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.MultiFormatWriter
 import com.google.zxing.common.BitMatrix
@@ -114,7 +115,7 @@ fun ReceiptScreen(
                                     style = MaterialTheme.typography.titleLarge,
                                     fontWeight = FontWeight.Bold
                                 )
-                                Text(text = "📅 ${event.date}")
+                                Text(text = "📅 ${event.date.toFormattedEventDate()}")
                                 Text(text = "📍 ${event.location}")
                             } ?: run {
                                 Text(text = "Evento ID: ${ticket.eventId}")
