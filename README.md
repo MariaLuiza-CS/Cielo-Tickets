@@ -15,7 +15,7 @@
 App nativo Android de venda de ingressos para eventos locais, com integração de pagamento via Cielo Smart (Deep Link), desenvolvido como desafio técnico para a vaga de Desenvolvedora Android na Cielo.
 </p>
 
-📄 A documentação completa do processo de desenvolvimento assistido por IA (specs, prompts, decisões e resultados) está em [`docs/AI_HARNESS.md`](docs/AI_HARNESS.md).
+📄 A documentação completa do processo de desenvolvimento assistido por IA (specs, prompts, decisões e resultados) está em [AI_HARNESS.md](https://github.com/MariaLuiza-CS/Cielo-Tickets/blob/main/AI_HARNESS.md)
 
 ---
 
