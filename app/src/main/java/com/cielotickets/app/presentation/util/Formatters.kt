@@ -17,19 +17,16 @@ fun Long.toBrazilianDateTime(): String {
     return dateFormat.format(Date(this))
 }
 
-/**
- * Formata uma data ISO 8601 para o padrão brasileiro de eventos.
- * Ex: "2026-10-15T22:00:00" -> "15 de outubro de 2026, às 22h"
- */
 fun String.toFormattedEventDate(): String {
-    return try {
-        val locale = Locale.Builder().setLanguage("pt").setRegion("BR").build()
-        val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", locale)
-        val date = inputFormat.parse(this) ?: return this
+    val locale = Locale.Builder().setLanguage("pt").setRegion("BR").build()
+    val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", locale)
 
-        val outputFormat = SimpleDateFormat("dd 'de' MMMM 'de' yyyy, 'às' HH'h'", locale)
-        outputFormat.format(date)
-    } catch (e: Exception) {
-        this // Retorna o original em caso de erro
-    }
+    val date = try {
+        inputFormat.parse(this)
+    } catch (e: java.text.ParseException) {
+        null
+    } ?: return this
+
+    val outputFormat = SimpleDateFormat("dd 'de' MMMM 'de' yyyy, 'às' HH'h'", locale)
+    return outputFormat.format(date)
 }
