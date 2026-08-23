@@ -3,6 +3,7 @@ package com.cielotickets.app.presentation.util
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import java.util.TimeZone
 
 fun Int.toBrazilianCurrency(): String {
     val locale = Locale.Builder().setLanguage("pt").setRegion("BR").build()
@@ -14,6 +15,7 @@ fun Double.toBrazilianCurrency(): String = this.toInt().toBrazilianCurrency()
 fun Long.toBrazilianDateTime(): String {
     val locale = Locale.Builder().setLanguage("pt").setRegion("BR").build()
     val dateFormat = SimpleDateFormat("dd/MM/yyyy HH:mm", locale)
+    dateFormat.timeZone = TimeZone.getTimeZone("America/Sao_Paulo")
     return dateFormat.format(Date(this))
 }
 
