@@ -20,9 +20,7 @@ class FormattersTest {
 
     @Test
     fun `toBrazilianDateTime should format timestamp correctly`() {
-        // 2026-08-23 10:00:00 BRT (roughly)
         val timestamp = 1787490000000L
-        // Note: SimpleDateFormat is locale dependent, but we fixed pt-BR in Formatter
         val result = timestamp.toBrazilianDateTime()
         assertEquals("23/08/2026 10:00", result)
     }
