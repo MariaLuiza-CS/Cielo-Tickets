@@ -27,6 +27,9 @@ jobs:
           echo "CIELO_CLIENT_ID=${{ secrets.CIELO_CLIENT_ID }}" > local.properties
           echo "CIELO_ACCESS_TOKEN=${{ secrets.CIELO_ACCESS_TOKEN }}" >> local.properties
 
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
       - name: Run Lint
         run: ./gradlew lint
 
