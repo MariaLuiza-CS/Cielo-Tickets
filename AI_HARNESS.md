@@ -91,18 +91,18 @@ ao `ViewModel` da tela de pagamento), `PaymentResponseActivity` real, `TicketRep
 - `statusCode` do pagamento aprovado está aninhado dentro de `paymentFields`, não no nível raiz do
   objeto `Payment` — não documentado claramente, identificado por inspeção manual do JSON via log
 
-**Prompt 9 — Correção de idempotência real (Gemini):** revisão de código identificou que a chave de
-idempotência só existia em memória (não sobrevivia à recriação do ViewModel), que o `reference` do
-callback nunca era validado contra a compra atual, e que não havia proteção contra ticket duplicado.
-Prompt corrigiu os três pontos: consulta ao banco antes de gerar nova chave, validação de
-`reference` no callback, e checagem de ticket existente antes de criar um novo.
-
 **Prompt 7 — Comprovante + QR Code (Gemini):** `ReceiptScreen` com geração de QR Code via ZXing a
 partir de um payload vinculando `ticketId` + `cieloOrderId`, garantindo rastreabilidade da compra
 concluída.
 
 **Prompt 8 — Histórico "Meus Ingressos" + menu lateral (Gemini):** `GetMyTicketsUseCase`,
 `MyTicketsScreen`, e `ModalNavigationDrawer` conectando as telas principais.
+
+**Prompt 9 — Correção de idempotência real (Gemini):** revisão de código identificou que a chave de
+idempotência só existia em memória (não sobrevivia à recriação do ViewModel), que o `reference` do
+callback nunca era validado contra a compra atual, e que não havia proteção contra ticket duplicado.
+Prompt corrigiu os três pontos: consulta ao banco antes de gerar nova chave, validação de
+`reference` no callback, e checagem de ticket existente antes de criar um novo.
 
 ---
 
