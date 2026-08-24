@@ -149,7 +149,6 @@ git clone https://github.com/MariaLuiza-CS/Cielo-Tickets.git
 ./gradlew spotlessCheck                 # valida formatação
 ./gradlew spotlessApply                 # corrige formatação
 ./gradlew jacocoTestReport               # relatório de cobertura (HTML)
-./gradlew jacocoTestCoverageVerification # valida cobertura mínima (70% no escopo testável)
 ```
 
 </details>
